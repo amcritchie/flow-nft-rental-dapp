@@ -9,8 +9,66 @@ import './App.css';
 function App() {
 
   const [user, setUser] = useState({loggedIn: null})
+  const [name, setName] = useState('') // NEW
+  const [transaction, setTransaction] = useState('') // NEW
 
   useEffect(() => fcl.currentUser.subscribe(setUser), [])
+
+  console.log("==Wallet-----------|");
+  console.log(user.addr);
+  console.log("==Balance----------|");
+  console.log(fcl.getAccount(user.addr));
+  console.log("-------------------|");
+
+  const initAccount = async () => {
+    const transactionId = await fcl.mutate({
+      cadence: `
+        import Profile from 0xProfile
+
+        transaction {
+          prepare(account: AuthAccount) {
+            // Only initialize the account if it hasn't already been initialized
+            if (!Profile.check(account.address)) {
+              // This creates and stores the profile in the user's account
+              account.save(<- Profile.new(), to: Profile.privatePath)
+
+              // This creates the public capability that lets applications read the profile's info
+              account.link<&Profile.Base{Profile.Public}>(Profile.publicPath, target: Profile.privatePath)
+            }
+          }
+        }
+      `,
+      payer: fcl.authz,
+      proposer: fcl.authz,
+      authorizations: [fcl.authz],
+      limit: 50
+    })
+
+    const transaction = await fcl.tx(transactionId).onceSealed()
+
+    console.log(transaction)
+    console.log(transaction.events[0]);
+    console.log(transaction.events[0].transactionId);
+
+    setTransaction(transaction.events[0].transactionId ?? 'No Profile')
+  }
+
+  // NEW
+  const sendQuery = async () => {
+    const profile = await fcl.query({
+      cadence: `
+        import Profile from 0xProfile
+
+        pub fun main(address: Address): Profile.ReadOnly? {
+          return Profile.read(address)
+        }
+      `,
+      args: (arg, t) => [arg(user.addr, t.Address)]
+    })
+
+    setName(profile?.name ?? 'No Profile')
+  }
+
 
   const AuthedState = () => {
     return (
@@ -21,10 +79,74 @@ function App() {
     )
   }
 
+  const TransactionLink = () => {
+    return (
+      <button href={"https://testnet.flowscan.org/transaction/" + transaction + "/events"} target="_blank" type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+        Transaction
+        <svg aria-hidden="true" className="ml-2 -mr-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
+      </button>
+    )
+  }
+
+  const ProfileInteraction = () => {
+    return (
+      <div>
+        <button onClick={sendQuery} type="button" className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+          Send Query
+        </button>
+        <button onClick={initAccount} type="button" className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+          Init Account
+        </button>
+        {transaction ? <TransactionLink /> : ""}
+      </div>
+    )
+  }
+
   const UnauthenticatedState = () => {
     return (
       <div>
         <a onClick={fcl.signUp} className="mr-6 text-sm font-medium text-gray-500 dark:text-white hover:underline">Login</a>
+      </div>
+    )
+  }
+
+  const NavBar = () => {
+    return (
+      <div>
+        <nav className="bg-white border-gray-200 dark:bg-gray-900">
+            <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl px-4 md:px-6 py-2.5">
+                <a href="https://flowbite.com" className="flex items-center">
+                  <img src={logo} className="xx-App-logo h-8 w-8" alt="logo" />
+                  <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">NFT Rentals</span>
+                </a>
+                <div className="flex items-center">
+                  {user.loggedIn
+                    ? <AuthedState />
+                    : <UnauthenticatedState />
+                  }
+                </div>
+            </div>
+        </nav>
+        <nav className="bg-gray-50 dark:bg-gray-700">
+            <div className="py-3 px-4 mx-auto max-w-screen-xl md:px-6">
+                <div className="flex items-center">
+                    <ul className="flex flex-row mt-0 mr-6 space-x-8 text-sm font-medium">
+                        <li>
+                            <a href="#" className="text-gray-900 dark:text-white hover:underline" aria-current="page">Home</a>
+                        </li>
+                        <li>
+                            <a href="#" className="text-gray-900 dark:text-white hover:underline">Company</a>
+                        </li>
+                        <li>
+                            <a href="#" className="text-gray-900 dark:text-white hover:underline">Team</a>
+                        </li>
+                        <li>
+                            <a href="#" className="text-gray-900 dark:text-white hover:underline">Features</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
       </div>
     )
   }
@@ -107,41 +229,15 @@ function App() {
   // Navbar example from Flowbite --> https://flowbite.com/docs/components/navbar/
   return (
     <div>
-      <nav className="bg-white border-gray-200 dark:bg-gray-900">
-          <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl px-4 md:px-6 py-2.5">
-              <a href="https://flowbite.com" className="flex items-center">
-                <img src={logo} className="xx-App-logo h-8 w-8" alt="logo" />
-                <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">NFT Rentals</span>
-              </a>
-              <div className="flex items-center">
-                {user.loggedIn
-                  ? <AuthedState />
-                  : <UnauthenticatedState />
-                }
-              </div>
-          </div>
-      </nav>
-      <nav className="bg-gray-50 dark:bg-gray-700">
-          <div className="py-3 px-4 mx-auto max-w-screen-xl md:px-6">
-              <div className="flex items-center">
-                  <ul className="flex flex-row mt-0 mr-6 space-x-8 text-sm font-medium">
-                      <li>
-                          <a href="#" className="text-gray-900 dark:text-white hover:underline" aria-current="page">Home</a>
-                      </li>
-                      <li>
-                          <a href="#" className="text-gray-900 dark:text-white hover:underline">Company</a>
-                      </li>
-                      <li>
-                          <a href="#" className="text-gray-900 dark:text-white hover:underline">Team</a>
-                      </li>
-                      <li>
-                          <a href="#" className="text-gray-900 dark:text-white hover:underline">Features</a>
-                      </li>
-                  </ul>
-              </div>
-          </div>
-      </nav>
-      
+      <NavBar />
+
+      <h2>
+        Address: {user?.addr ?? "No Address"}
+      </h2>
+      <h2>
+        Profile Name: {name ?? "--"}
+      </h2>
+      <ProfileInteraction />
       <Card />
       <Card />
       <Card />

@@ -5,6 +5,7 @@ import * as fcl from "@onflow/fcl";
 import logo from './logo.svg';
 import './App.css';
 
+import Editable from "./components/editable/Editable"
 
 function App() {
 
@@ -279,6 +280,8 @@ function App() {
         Profile Name: {name ?? "--"}
       </h2>
       <ProfileInteraction />
+
+      <Editable />
 
       <LineBreak />
 

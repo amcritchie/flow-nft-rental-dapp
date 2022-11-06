@@ -5,6 +5,7 @@ import * as fcl from "@onflow/fcl";
 import logo from './logo.svg';
 import './App.css';
 import Navbar from './components/navbar/Navbar'
+import Home from './components/home/Home'
 
 import Editable from "./components/editable/Editable"
 
@@ -213,6 +214,9 @@ function App() {
   return (
     <div className="App">
       <Navbar />
+      <div className="content">
+        <Home />  
+      </div>
 
 
       <LineBreak />

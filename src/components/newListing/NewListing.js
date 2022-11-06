@@ -3,8 +3,8 @@ import { useState } from "react";
 const NewListing = () => {
   // const [rentalFeeFlow, setRentalFeeFlow] = useState(0.0);
   // const [rentalCollateralFlow, setRentalCollateralFlow] = useState(0.0);
-  const [rentalFeeFlow, setRentalFeeFlow] = useState("");
-  const [rentalCollateralFlow, setRentalCollateralFlow] = useState("");
+  const [rentalFeeFlow, setRentalFeeFlow] = useState(5.0);
+  const [rentalCollateralFlow, setRentalCollateralFlow] = useState(50.0);
   const [rentalNotes, setRentalNotes] = useState("");
   const [rentalLengthHours, setRentalLengthHours] = useState("144"); // 6 Days
 

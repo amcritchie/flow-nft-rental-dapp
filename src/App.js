@@ -4,6 +4,7 @@ import * as fcl from "@onflow/fcl";
 
 import logo from './logo.svg';
 import './App.css';
+import Navbar from './components/navbar/Navbar'
 
 import Editable from "./components/editable/Editable"
 
@@ -95,15 +96,6 @@ function App() {
     fcl.tx(transactionId).subscribe(res => setTransactionStatus(res.status))
   }
 
-  const AuthedState = () => {
-    return (
-      <div>
-          <a href={ 'https://flowscan.org/account/' + user?.addr } target="_blank" className="mr-6 text-sm font-medium text-gray-500 dark:text-white hover:underline">{user?.addr ?? "No Address"}</a>
-          <a onClick={fcl.unauthenticate} className="text-sm font-medium text-blue-600 dark:text-blue-500 hover:underline">Log Out</a>
-      </div>
-    )
-  }
-
   const TransactionLink = () => {
     return (
       <a href={"https://testnet.flowscan.org/transaction/" + transaction + "/events"} target="_blank" type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
@@ -131,14 +123,6 @@ function App() {
     )
   }
 
-  const UnauthenticatedState = () => {
-    return (
-      <div>
-        <a onClick={fcl.signUp} className="mr-6 text-sm font-medium text-gray-500 dark:text-white hover:underline">Login</a>
-      </div>
-    )
-  }
-
   const LineBreak = () => {
     return (
       <div className="flex flex-wrap justify-center space-x-2">
@@ -146,47 +130,6 @@ function App() {
         <span className="px-4 py-2 rounded-full text-gray-500 bg-gray-200 font-semibold text-sm flex align-center w-max cursor-pointer active:bg-gray-300 transition duration-300 ease">--==+==--</span>
         <span className="px-4 py-2 rounded-full text-gray-500 bg-gray-200 font-semibold text-sm flex align-center w-max cursor-pointer active:bg-gray-300 transition duration-300 ease">--==+==--</span>
         <span className="px-4 py-2 rounded-full text-gray-500 bg-gray-200 font-semibold text-sm flex align-center w-max cursor-pointer active:bg-gray-300 transition duration-300 ease">--==+==--</span>
-      </div>
-    )
-  }
-
-  const NavBar = () => {
-    return (
-      <div>
-        <nav className="bg-white border-gray-200 dark:bg-gray-900">
-            <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl px-4 md:px-6 py-2.5">
-                <a href="https://flowbite.com" className="flex items-center">
-                  <img src={logo} className="xx-App-logo h-8 w-8" alt="logo" />
-                  <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">NFT Rentals</span>
-                </a>
-                <div className="flex items-center">
-                  {user.loggedIn
-                    ? <AuthedState />
-                    : <UnauthenticatedState />
-                  }
-                </div>
-            </div>
-        </nav>
-        <nav className="bg-gray-50 dark:bg-gray-700">
-            <div className="py-3 px-4 mx-auto max-w-screen-xl md:px-6">
-                <div className="flex items-center">
-                    <ul className="flex flex-row mt-0 mr-6 space-x-8 text-sm font-medium">
-                        <li>
-                            <a href="#" className="text-gray-900 dark:text-white hover:underline" aria-current="page">Home</a>
-                        </li>
-                        <li>
-                            <a href="#" className="text-gray-900 dark:text-white hover:underline">Company</a>
-                        </li>
-                        <li>
-                            <a href="#" className="text-gray-900 dark:text-white hover:underline">Team</a>
-                        </li>
-                        <li>
-                            <a href="#" className="text-gray-900 dark:text-white hover:underline">Features</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
       </div>
     )
   }
@@ -268,8 +211,9 @@ function App() {
 
   // Navbar example from Flowbite --> https://flowbite.com/docs/components/navbar/
   return (
-    <div>
-      <NavBar />
+    <div className="App">
+      <Navbar />
+
 
       <LineBreak />
 
@@ -284,6 +228,8 @@ function App() {
       <Editable />
 
       <LineBreak />
+
+      
 
       <Card />
       <Card />

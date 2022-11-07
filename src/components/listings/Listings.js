@@ -1,7 +1,24 @@
-import flowLogo from '../../flowLogo.png';
+import { useState, useEffect } from 'react';
 
-// const Listings = (props) => {
+import flowLogo from '../../flowLogo.png';
+import rookieYear from '../../rookieYear.svg';
+import championshipYear from '../../championshipYear.svg';
+import playerNumber from '../../playerNumber.svg';
+import firstSerial from '../../firstSerial.svg';
+import rookieMint from '../../rookieMint.svg';
+import allDayDebut from '../../allDayDebut.svg';
+
 const Listings = ({ listings, title, handleRentListing, handleDeleteListing}) => {
+
+    // Badges and their image.
+    const [badges, setBadges] = useState({
+        rookieYear: rookieYear,
+        championshipYear: championshipYear,
+        playerNumber: playerNumber,
+        firstSerial: firstSerial,
+        rookieMint: rookieMint,
+        allDayDebut: allDayDebut,
+    });
 
     return (
         <div className="listings">
@@ -14,7 +31,10 @@ const Listings = ({ listings, title, handleRentListing, handleDeleteListing}) =>
                 <form className="flex-auto pl-6">
                 <div className="relative flex flex-wrap items-baseline pb-6 before:bg-black before:absolute before:-top-6 before:bottom-0 before:-left-60 before:-right-6">
                     <h1 className="relative w-full flex-none mb-2 text-2xl font-semibold text-white">
-                    {listing.name}
+                        {listing.name}
+                        {listing.badges.map((badge) => (
+                            <img src={badges[badge]} className="inline h-6 w-6 ml-1" alt="logo" />
+                        ))}
                     </h1>
                     <div className="relative flex items-center text-lg text-white">
                         Rent: {listing.rentalFeeFlow} 

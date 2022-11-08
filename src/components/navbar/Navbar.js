@@ -1,5 +1,5 @@
 import "../../flow/config";
-import logo from '../../logo.svg';
+import logo from '../../assets/logo.svg';
 import { useState, useEffect } from "react";
 import * as fcl from "@onflow/fcl";
 

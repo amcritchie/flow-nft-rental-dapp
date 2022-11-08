@@ -2,10 +2,11 @@ import "./flow/config";
 import { useState, useEffect } from "react";
 import * as fcl from "@onflow/fcl";
 
-import logo from './logo.svg';
+import logo from './assets/logo.svg';
 import './App.css';
 import Navbar from './components/navbar/Navbar';
 import Home from './components/home/Home';
+import UpdateProfile from './components/updateProfile/UpdateProfile';
 import Legacy from './components/legacy/Legacy';
 import Interact from './components/interact/Interact';
 
@@ -36,7 +37,7 @@ function App() {
         <div className="content">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/interact" element={<Interact />} />
+            <Route path="/interact" element={<UpdateProfile />} />
             <Route path="/legacy" element={<Legacy />} />
           </Routes>
         </div>

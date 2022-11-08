@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import * as fcl from "@onflow/fcl";
 
 import Editable from "../editable/Editable"
-
+import UpdateProfile from "../updateProfile/UpdateProfile"
 
 const Interact = () => {
 
@@ -124,6 +124,13 @@ const Interact = () => {
 
     return ( 
         <div className="interact">
+          <br />
+          <br />
+
+          <UpdateProfile />
+
+          <br />
+          <br />
             <LineBreak />
             <h2>
             Address: {user?.addr ?? "No Address"}

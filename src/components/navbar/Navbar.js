@@ -2,12 +2,15 @@ import "../../flow/config";
 import logo from '../../assets/logo.svg';
 import { useState, useEffect } from "react";
 import * as fcl from "@onflow/fcl";
+import {useCurrentUser, useAccount, fmtFlow} from "@onflow/fcl-react"
+
 
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 
 const Navbar = () => {
     const [user, setUser] = useState({loggedIn: null})
     const [name, setName] = useState('') // NEW
+    const [acct, refetchAcct] = useAccount(user.addr)
 
     // Run hook only on load.  Dependancy [] 
     useEffect(() => fcl.currentUser.subscribe(setUser), [])
@@ -16,13 +19,24 @@ const Navbar = () => {
     useEffect(() => {
       console.log('Web3 3 user state change');
       console.log(user);
+      // debugger;
     }, [user]);
   
+    //     // Run hook when user state changes.  Dependancy [acct]
+    // useEffect(() => {
+    //   console.log('Web3 3 user acct state change');
+    //   console.log(acct);
+    //   debugger;
+    // }, [acct]);
+      
+
     console.log("==Wallet-----------|");
     console.log(user.addr);
     console.log("==Balance----------|");
     console.log(fcl.getAccount(user.addr));
-    console.log("-------------------|");
+    console.log("-----------------|");
+    // console.log(acct);
+    // console.log("-------------------|");
 
     const AuthedState = () => {
         return (
@@ -67,18 +81,18 @@ const Navbar = () => {
                           </Link>
                         </li>
                         <li>
+                          <Link to={'/updateProfile'}>
+                            <a className="text-gray-900 dark:text-white hover:underline" aria-current="page">Profile</a>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to={'/sandbox'}>
+                            <a className="text-gray-900 dark:text-white hover:underline" aria-current="page">Sandbox</a>
+                          </Link>
+                        </li>
+                        <li>
                           <Link to={'/interact'}>
                             <a className="text-gray-900 dark:text-white hover:underline" aria-current="page">Interact</a>
-                          </Link>
-                        </li>
-                        <li>
-                          <Link to={'/interact'}>
-                            <a className="text-gray-900 dark:text-white hover:underline" aria-current="page">Team</a>
-                          </Link>
-                        </li>
-                        <li>
-                          <Link to={'/interact'}>
-                            <a className="text-gray-900 dark:text-white hover:underline" aria-current="page">Features</a>
                           </Link>
                         </li>
                         <li>

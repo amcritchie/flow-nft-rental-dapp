@@ -6,9 +6,10 @@ import logo from './assets/logo.svg';
 import './App.css';
 import Navbar from './components/navbar/Navbar';
 import Home from './components/home/Home';
-import UpdateProfile from './components/updateProfile/UpdateProfile';
 import Legacy from './components/legacy/Legacy';
+import Sandbox from './components/sandbox/Sandbox';
 import Interact from './components/interact/Interact';
+import UpdateProfile from './components/updateProfile/UpdateProfile';
 
 // import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -37,7 +38,9 @@ function App() {
         <div className="content">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/interact" element={<UpdateProfile />} />
+            <Route path="/interact" element={<Interact />} />
+            <Route path="/updateProfile" element={<UpdateProfile />} />
+            <Route path="/sandbox" element={<Sandbox />} />
             <Route path="/legacy" element={<Legacy />} />
           </Routes>
         </div>

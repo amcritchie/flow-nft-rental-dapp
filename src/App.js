@@ -7,7 +7,7 @@ import './App.css';
 import Navbar from './components/navbar/Navbar';
 import Home from './components/home/Home';
 import Legacy from './components/legacy/Legacy';
-import Sandbox from './components/sandbox/Sandbox';
+import FlowAccountDetails from './components/flowAccountDetails/FlowAccountDetails';
 import Interact from './components/interact/Interact';
 import UpdateProfile from './components/updateProfile/UpdateProfile';
 
@@ -40,7 +40,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/interact" element={<Interact />} />
             <Route path="/updateProfile" element={<UpdateProfile />} />
-            <Route path="/sandbox" element={<Sandbox />} />
+            <Route path="/flowAccountDetails" element={<FlowAccountDetails />} />
             <Route path="/legacy" element={<Legacy />} />
           </Routes>
         </div>

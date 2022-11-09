@@ -1,9 +1,10 @@
-import "../../flow/config";
-import logo from '../../assets/logo.svg';
-import { useState, useEffect } from "react";
 import * as fcl from "@onflow/fcl";
 import {useCurrentUser, useAccount, fmtFlow} from "@onflow/fcl-react"
 
+import "../../flow/config";
+import logo from '../../assets/logo.svg';
+import flowLogo from '../../assets/flowLogo.png';
+import { useState, useEffect } from "react";
 
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 
@@ -11,37 +12,33 @@ const Navbar = () => {
     const [user, setUser] = useState({loggedIn: null})
     const [name, setName] = useState('') // NEW
     const [acct, refetchAcct] = useAccount(user.addr)
+    const [flowBalance, setFlowBalance] = useState(0)
 
     // Run hook only on load.  Dependancy [] 
     useEffect(() => fcl.currentUser.subscribe(setUser), [])
+    // useEffect(() => fcl.currentUser.subscribe(refetchAcct), [])
 
     // Run hook when user state changes.  Dependancy [user]
     useEffect(() => {
-      console.log('Web3 3 user state change');
+      console.log('Web3 3 user state change===|');
       console.log(user);
-      // debugger;
+      console.log('Account balance============|');
+      console.log(acct?.balance);
+      console.log('Account balance2===========|');
+      console.log(acct?.balance);
+      console.log('===========================|');
     }, [user]);
   
-    //     // Run hook when user state changes.  Dependancy [acct]
-    // useEffect(() => {
-    //   console.log('Web3 3 user acct state change');
-    //   console.log(acct);
-    //   debugger;
-    // }, [acct]);
-      
-
-    console.log("==Wallet-----------|");
-    console.log(user.addr);
-    console.log("==Balance----------|");
-    console.log(fcl.getAccount(user.addr));
-    console.log("-----------------|");
-    // console.log(acct);
-    // console.log("-------------------|");
-
     const AuthedState = () => {
         return (
           <div>
-              <a href={ 'https://flowscan.org/account/' + user?.addr } target="_blank" className="mr-6 text-sm font-medium text-gray-500 dark:text-white hover:underline">{user?.addr ?? "No Address"}</a>
+            <a className="mr-3 text-sm font-medium text-gray-500 dark:text-white hover:underline">
+              {acct?.balance / 100000000 ?? 0}
+              <img src={flowLogo} className="h-4 w-4 mx-1 mb-1 inline" alt="logo" />
+            </a>
+            <a href={ 'https://testnet.flowscan.org/account/' + user?.addr } target="_blank" className="mr-6 text-sm font-medium text-gray-500 dark:text-white hover:underline">
+              {user?.addr ?? "No Address"}
+              </a>
               <a onClick={fcl.unauthenticate} className="text-sm font-medium text-blue-600 dark:text-blue-500 hover:underline">Log Out</a>
           </div>
         )
@@ -86,8 +83,8 @@ const Navbar = () => {
                           </Link>
                         </li>
                         <li>
-                          <Link to={'/sandbox'}>
-                            <a className="text-gray-900 dark:text-white hover:underline" aria-current="page">Sandbox</a>
+                          <Link to={'/flowAccountDetails'}>
+                            <a className="text-gray-900 dark:text-white hover:underline" aria-current="page">Flow Account</a>
                           </Link>
                         </li>
                         <li>

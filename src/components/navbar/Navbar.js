@@ -32,14 +32,20 @@ const Navbar = () => {
     const AuthedState = () => {
         return (
           <div>
+            { acct?.balance && // Load Flow balance when ready.
             <a className="mr-3 text-sm font-medium text-gray-500 dark:text-white hover:underline">
               {acct?.balance / 100000000 ?? 0}
               <img src={flowLogo} className="h-4 w-4 mx-1 mb-1 inline" alt="logo" />
             </a>
-            <a href={ 'https://testnet.flowscan.org/account/' + user?.addr } target="_blank" className="mr-6 text-sm font-medium text-gray-500 dark:text-white hover:underline">
-              {user?.addr ?? "No Address"}
-              </a>
-              <a onClick={fcl.unauthenticate} className="text-sm font-medium text-blue-600 dark:text-blue-500 hover:underline">Log Out</a>
+            }
+            { user?.addr && // Load Flow wallet when ready.
+              <div className="inline">
+                <a href={ 'https://testnet.flowscan.org/account/' + user?.addr } target="_blank" className="mr-6 text-sm font-medium text-gray-500 dark:text-white hover:underline">
+                  {user?.addr}
+                </a>
+                <a onClick={fcl.unauthenticate} className="text-sm font-medium text-blue-600 dark:text-blue-500 hover:underline">Log Out</a>
+              </div>
+            }
           </div>
         )
       }

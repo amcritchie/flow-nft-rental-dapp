@@ -1,12 +1,53 @@
-import * as fcl from "@onflow/fcl"
-import {useCurrentUser, useAccount, fmtFlow, useConfig} from "@onflow/fcl-react"
+// https://www.npmjs.com/package/@onflow/fcl-react/v/0.0.0
+// import * as fcl from "@onflow/fcl"
+// import {useCurrentUser, useAccount, fmtFlow, useConfig} from "@onflow/fcl-react"
 
-const Sandbox = () => {
+import * as fcl from "@onflow/fcl"
+import * as t from "@onflow/types"
+// import {useScript, useCurrentUser} from "@onflow/fcl-react"
+import {useScript, useCurrentUser, useAccount, fmtFlow, useConfig} from "@onflow/fcl-react"
+import {useEffect, useCallback} from "react"
+
+// prettier-ignore
+// fcl.config()
+//   .put("env", "testnet")
+//   .put("0xProfile", "0x1d007d755706c469")
+
+const FlowAccountDetails = () => {
     const env = useConfig("env")
     const accessNode = useConfig("accessNode.api")
     const walletDiscovery = useConfig("challenge.handshake")
     const [user] = useCurrentUser()
     const [acct, refetchAcct] = useAccount(user.addr)
+
+    // const [user] = useCurrentUser()
+    const [exec, profile] = useScript([
+      fcl.script`
+        import Profile from 0xProfile
+  
+        pub fun main(address: Address): Profile.ReadOnly? {
+          return Profile.fetchProfile(address)
+        }
+      `
+    ])
+
+
+    // fetch the profile if there is a current user
+    useEffect(() => {
+        // prettier-ignore
+        if (user.addr) exec([
+        fcl.arg(user.addr, t.Address)
+        ])
+    }, [user.addr])
+
+    // fetch the profile as needed (if there is a current user)
+    const triggerScript = useCallback(() => {
+        // prettier-ignore
+        if (user.addr) exec([
+        fcl.arg(user.addr, t.Address)
+        ])
+    }, [user.addr])
+
 
     // prettier-ignore
     if (acct == null) return <div>Loading Account...</div>
@@ -14,6 +55,14 @@ const Sandbox = () => {
     return (
         <div>
             <h3>General Info</h3>
+            <ul>
+                <li>
+                    <button onClick={triggerScript}>Refresh Profile</button>
+                </li>
+
+                
+                
+            </ul>
             <ul>
                 <li>ENV:  <b>{env}</b></li>
                 <li>Access Node: <b>{accessNode}</b></li>
@@ -37,4 +86,4 @@ const Sandbox = () => {
     )
 }
  
-export default Sandbox;
+export default FlowAccountDetails;

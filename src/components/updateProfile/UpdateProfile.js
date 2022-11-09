@@ -10,12 +10,21 @@ const UpdateProfile = () => {
     const [inputProfileName, setInputProfileName] = useState("");
     const [transaction, setTransaction] = useState('') // NEW
     const [transactionStatus, setTransactionStatus] = useState(null) // NEW
+    const [isLoading, setIsLoading] = useState(false) // NEW
+    const [loading, setLoading] = useState({visible: false}) // NEW
+    const [showError, setShowError] = useState(false) // NEW
+    const [error, setError] = useState(null) // NEW
+    // const [responseErrorDetails, setResponseErrorDetails] = useState('hello') // NEW
 
     // Needed to run Cadence functions including sendQuery, initAccount, executeTransaction
     useEffect(() => fcl.currentUser.subscribe(setUser), [])
 
     // [Query] Query Profile Name
     const sendQuery = async () => {
+        setError(null)
+        setLoading({visible: true})
+
+        // Import Profile resource 0xProfile wallet passing Address as an input
         const profile = await fcl.query({
         cadence: `
             import Profile from 0xProfile
@@ -26,12 +35,70 @@ const UpdateProfile = () => {
         `,
         args: (arg, t) => [arg(user.addr, t.Address)]
         })
-
         setReturnedProfileName(profile?.name ?? 'No Profile')
+        setLoading({visible: false})
+    }
+
+    const sendQueryThen = () => {
+        setError(null)
+        setShowError(false)
+        setLoading({visible: true})
+        fcl.query({
+            cadence: `
+                import Profile from 0xProfile
+    
+                pub fun main(address: Address): Profile.ReadOnly? {
+                return Profile.read(address)
+                }
+            `,
+            args: (arg, t) => [arg(user.addr, t.Address)]
+            })
+        .then(res => {
+            setReturnedProfileName(res?.name ?? 'No Profile')
+            setLoading({visible: false})
+        })
+        .catch(err => {
+            setShowError(true)
+            setError(err.message)
+            setLoading({visible: false})
+        })
+    }
+
+    const sendQueryThenError = () => {
+        setError(null)
+        setShowError(true)
+        setLoading({visible: true})
+        // Set Loading Variable
+        setIsLoading(true)
+        // Send query with bad profile 0xProfile => 0xBadProfile
+        fcl.query({
+            cadence: `
+                import Profile from 0xBadProfile
+    
+                pub fun main(address: Address): Profile.ReadOnly? {
+                return Profile.read(address)
+                }
+            `,
+            args: (arg, t) => [arg(user.addr, t.Address)]
+            })
+        .then(res => {
+            // This won't trigger because the request is bad
+            setReturnedProfileName(res?.name ?? 'No Profile')
+            // Set Loading Variable
+            setLoading({visible: false})
+        })
+        .catch(err => {
+            setShowError(true)
+            setError(err.message)
+            setLoading({visible: false})
+        })
     }
 
     // [Mutate] Initialize Account 
+    // For our ccount to have a profile, we need to create a resouce in our account youtube 18:00
     const initAccount = async () => {
+        setError(null)
+        setLoading({visible: true})
         const transactionId = await fcl.mutate({
         cadence: `
             import Profile from 0xProfile
@@ -62,10 +129,13 @@ const UpdateProfile = () => {
         console.log(transaction.events[0].transactionId);
 
         setTransaction(transaction.events[0].transactionId ?? 'No Profile')
+        setLoading({visible: false})
     }
 
     // [Mutate] Mutate Profile name 
     const executeTransaction = async () => {
+        setError(null)
+        setLoading({visible: true})
         const transactionId = await fcl.mutate({
         cadence: `
             import Profile from 0xProfile
@@ -87,6 +157,7 @@ const UpdateProfile = () => {
         })
 
         fcl.tx(transactionId).subscribe(res => setTransactionStatus(res.status))
+        setLoading({visible: false})
     }
 
     return ( 
@@ -94,6 +165,8 @@ const UpdateProfile = () => {
             <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl px-4 md:px-6 py-2.5">
                 <div className="flex items-center">
                     <button onClick={sendQuery} type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Send Query</button>
+                    <button onClick={sendQueryThen} type="button" class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Send Query</button>
+                    <button onClick={sendQueryThenError} type="button" class="text-white bg-gradient-to-r from-yellow-500 via-yellow-600 to-yellow-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:focus:ring-yellow-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Request Error</button>
                     <button onClick={initAccount} type="button" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Init Account</button>
                 </div>
                 <div className="flex items-center">
@@ -112,7 +185,22 @@ const UpdateProfile = () => {
                 ) : "" }
                 </div>
             </form>
-            {inputProfileName}
+            {transactionStatus && <div>{transactionStatus}</div> }
+            {loading?.visible && <div>Loading ...</div> }
+            { error &&
+            <div>
+                <br />
+            <a href="#" class="block p-6 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    Request Error
+                </h5>
+                <p class="font-normal text-gray-700 dark:text-gray-400">
+                {error}
+                </p>
+            </a>
+            </div>
+            }
+    
         </div>
      );
 }

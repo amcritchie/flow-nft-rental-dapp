@@ -9,12 +9,85 @@ const UpdateProfile = () => {
     const [returnedProfileName, setReturnedProfileName] = useState("");
     const [inputProfileName, setInputProfileName] = useState("");
     const [transaction, setTransaction] = useState('') // NEW
-    const [transactionStatus, setTransactionStatus] = useState(null) // NEW
+
+    const [transactionStatus, setTransactionStatus] = useState(1) // NEW
+
     const [isLoading, setIsLoading] = useState(false) // NEW
+    const [flowTransationStatus, setFlowTransationStatus] = useState("Pending") // NEW
+    const [flowTransationLastEvent, setFlowTransationLastEvent] = useState("Pending") // NEW
+    const [flowTransationProgress, setFlowTransationProgress] = useState("15%") // NEW
+    const [flowTransationProgressColorClass, setFlowTransationProgressColorClass] = useState("bg-green-600 text-green-100")
+
     const [loading, setLoading] = useState({visible: false}) // NEW
     const [showError, setShowError] = useState(false) // NEW
     const [error, setError] = useState(null) // NEW
     // const [responseErrorDetails, setResponseErrorDetails] = useState('hello') // NEW
+
+    const [flowTransactionStatus, setFlowTransactionStatus] = useState({
+       '0': {status: 'unkown', progress_percent: 10, color: 'yellow', description: 'The transaction status is not known.'},
+       '1': {status: 'pending', progress_percent: 25, color: 'green', description: 'The transaction has been received by a collector but not yet finalized in a block.'},
+       '2': {status: 'finalized', progress_percent: 50, color: 'green', description: 'The consensus nodes have finalized the block that the transaction is included in.'},
+       '3': {status: 'executed', progress_percent: 75, color: 'green', description: 'The execution nodes have produced a result for the transation.'},
+       '4': {status: 'sealed', progress_percent: 100, color: 'blue', description: 'The verification nodes have verified the transaction (the block in which the transaction is) and the seal is included in the latest block.'},
+       '5': {status: 'expired', progress_percent: 90, color: 'red', description: 'The transaction we submitted past its expiration.'}
+    });
+
+    // Run hook when user state changes.  Dependancy [user]
+    useEffect(() => {
+        console.log('Transaction Status Updated');
+        console.log('New Transaction Status: ' + transactionStatus);
+        console.log('===========================|');
+
+        switch (transactionStatus) {
+            case 0:
+                // The transaction status is not known.
+                setFlowTransationStatus("Unkown");
+                setFlowTransationLastEvent("Unkown");
+                setFlowTransationProgress("15%");
+                setFlowTransationProgressColorClass("bg-red-600 text-red-100");
+              break;
+            case '1':
+                // The transaction has been received by a collector but not yet finalized in a block.
+                setFlowTransationStatus("Pending");
+                setFlowTransationLastEvent("Pending");
+                setFlowTransationProgress("35%");
+                setFlowTransationProgressColorClass("bg-green-600 text-green-100");
+              break;
+            case 2:
+                // The consensus nodes have finalized the block that the transaction is included in.
+                setFlowTransationStatus("Finalized");
+                setFlowTransationLastEvent("Finalized");
+                setFlowTransationProgress("50%");
+                setFlowTransationProgressColorClass("bg-green-600 text-green-100");
+              break;
+            case 3:
+                 // The execution nodes have produced a result for the transation.
+                setFlowTransationStatus("Executed");
+                setFlowTransationLastEvent("Executed");
+                setFlowTransationProgress("75%");
+                setFlowTransationProgressColorClass("bg-green-600 text-green-100");
+              break;
+            case 4:
+                // The verification nodes have verified the transaction (the block in which the transaction is) and the seal is included in the latest block.
+                setFlowTransationStatus("Sealed");
+                setFlowTransationLastEvent("Sealed");
+                setFlowTransationProgress("100%");
+                setFlowTransationProgressColorClass("bg-blue-600 text-blue-100");
+              break;
+            case 5:
+                // The transaction we submitted past its expiration.
+                setFlowTransationStatus("Expired");
+                setFlowTransationLastEvent("Expired");
+                setFlowTransationProgress("100%");
+                setFlowTransationProgressColorClass("bg-red-600 text-blredue-100");
+              break;
+            default:
+                setFlowTransationStatus("Pending");
+                setFlowTransationLastEvent("Pending");
+                setFlowTransationProgress("15%");
+                setFlowTransationProgressColorClass("bg-green-600 text-green-100");
+          }
+    }, [transactionStatus]);
 
     // Needed to run Cadence functions including sendQuery, initAccount, executeTransaction
     useEffect(() => fcl.currentUser.subscribe(setUser), [])
@@ -43,6 +116,7 @@ const UpdateProfile = () => {
         setError(null)
         setShowError(false)
         setLoading({visible: true})
+
         fcl.query({
             cadence: `
                 import Profile from 0xProfile
@@ -129,11 +203,19 @@ const UpdateProfile = () => {
         console.log(transaction.events[0].transactionId);
 
         setTransaction(transaction.events[0].transactionId ?? 'No Profile')
+        fcl.tx(transactionId).subscribe(res => setTransactionStatus(res.status))
         setLoading({visible: false})
     }
 
     // [Mutate] Mutate Profile name 
     const executeTransaction = async () => {
+
+        setIsLoading(true);
+        setFlowTransationStatus("Pending");
+        setFlowTransationLastEvent("Pending");
+        setFlowTransationProgress("15%");
+        setFlowTransationProgressColorClass("bg-green-600 text-green-100");
+
         setError(null)
         setLoading({visible: true})
         const transactionId = await fcl.mutate({
@@ -173,6 +255,8 @@ const UpdateProfile = () => {
                     Profile: {returnedProfileName}
                 </div>
             </div>
+
+            
             <form onSubmit={executeTransaction}>
                 <label for="search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">Your Email</label>
                 <div className="relative">
@@ -185,6 +269,20 @@ const UpdateProfile = () => {
                 ) : "" }
                 </div>
             </form>
+
+            
+            <br />
+            {isLoading &&
+                <div>
+                    <div class="mb-1 text-lg font-medium dark:text-black">{flowTransationStatus}</div>
+                    <div className="w-full h-6 bg-gray-200 rounded-full dark:bg-gray-700">
+                        <div className={'h-6 text-l font-medium text-right pr-4 p-0.5 leading-none rounded-full ' + flowTransationProgressColorClass} style={{ width: flowTransationProgress}}>{flowTransationLastEvent}</div>
+                    </div>
+                </div>
+            }
+
+            <br /><br />
+
             {transactionStatus && <div>{transactionStatus}</div> }
             {loading?.visible && <div>Loading ...</div> }
             { error &&

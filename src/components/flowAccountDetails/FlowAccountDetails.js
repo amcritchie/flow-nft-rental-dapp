@@ -59,9 +59,6 @@ const FlowAccountDetails = () => {
                 <li>
                     <button onClick={triggerScript}>Refresh Profile</button>
                 </li>
-
-                
-                
             </ul>
             <ul>
                 <li>ENV:  <b>{env}</b></li>

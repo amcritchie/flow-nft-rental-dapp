@@ -84,8 +84,13 @@ const Navbar = () => {
                           </Link>
                         </li>
                         <li>
+                          <Link to={'/mutate'}>
+                            <a className="text-gray-900 dark:text-white hover:underline" aria-current="page">Mutate</a>
+                          </Link>
+                        </li>
+                        <li>
                           <Link to={'/updateProfile'}>
-                            <a className="text-gray-900 dark:text-white hover:underline" aria-current="page">Profile</a>
+                            <a className="text-gray-900 dark:text-white hover:underline" aria-current="page">Update Profile</a>
                           </Link>
                         </li>
                         <li>

@@ -10,6 +10,7 @@ import Legacy from './components/legacy/Legacy';
 import FlowAccountDetails from './components/flowAccountDetails/FlowAccountDetails';
 import Interact from './components/interact/Interact';
 import UpdateProfile from './components/updateProfile/UpdateProfile';
+import Mutate from './components/mutate/Mutate';
 
 // import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -40,6 +41,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/interact" element={<Interact />} />
             <Route path="/updateProfile" element={<UpdateProfile />} />
+            <Route path="/mutate" element={<Mutate />} />
             <Route path="/flowAccountDetails" element={<FlowAccountDetails />} />
             <Route path="/legacy" element={<Legacy />} />
           </Routes>

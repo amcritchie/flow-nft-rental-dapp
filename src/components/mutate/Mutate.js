@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import * as fcl from "@onflow/fcl";
 import LoadingBar from '../loadingBar/LoadingBar';
 
-const UpdateProfile = () => {
+const Mutate = () => {
     const [user, setUser] = useState({loggedIn: null})
     const [name, setName] = useState("")
     const [returnedProfileName, setReturnedProfileName] = useState("");
@@ -227,5 +227,5 @@ const UpdateProfile = () => {
      );
 }
  
-export default UpdateProfile;
+export default Mutate;
 

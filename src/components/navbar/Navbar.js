@@ -1,12 +1,13 @@
 import * as fcl from "@onflow/fcl";
 import {useCurrentUser, useAccount, fmtFlow} from "@onflow/fcl-react"
 
-import "../../flow/config";
 import logo from '../../assets/logo.svg';
 import flowLogo from '../../assets/flowLogo.png';
 import { useState, useEffect } from "react";
 
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+
+import ToggleEnvNet from '../toggleEnvNet/ToggleEnvNet';
 
 const Navbar = () => {
     const [user, setUser] = useState({loggedIn: null})
@@ -30,33 +31,33 @@ const Navbar = () => {
     }, [user]);
   
     const AuthedState = () => {
-        return (
-          <div>
-            { acct?.balance && // Load Flow balance when ready.
-            <a className="mr-3 text-sm font-medium text-gray-500 dark:text-white hover:underline">
-              {acct?.balance / 100000000 ?? 0}
-              <img src={flowLogo} className="h-4 w-4 mx-1 mb-1 inline" alt="logo" />
-            </a>
-            }
-            { user?.addr && // Load Flow wallet when ready.
-              <div className="inline">
-                <a href={ 'https://testnet.flowscan.org/account/' + user?.addr } target="_blank" className="mr-6 text-sm font-medium text-gray-500 dark:text-white hover:underline">
-                  {user?.addr}
-                </a>
-                <a onClick={fcl.unauthenticate} className="text-sm font-medium text-blue-600 dark:text-blue-500 hover:underline">Log Out</a>
-              </div>
-            }
-          </div>
-        )
-      }
+      return (
+        <div>
+          { acct?.balance && // Load Flow balance when ready.
+          <a className="mr-3 text-sm font-medium text-gray-500 dark:text-white hover:underline">
+            {acct?.balance / 100000000 ?? 0}
+            <img src={flowLogo} className="h-4 w-4 mx-1 mb-1 inline" alt="logo" />
+          </a>
+          }
+          { user?.addr && // Load Flow wallet when ready.
+            <div className="inline">
+              <a href={ 'https://testnet.flowscan.org/account/' + user?.addr } target="_blank" className="mr-6 text-sm font-medium text-gray-500 dark:text-white hover:underline">
+                {user?.addr}
+              </a>
+              <a onClick={fcl.unauthenticate} className="text-sm font-medium text-blue-600 dark:text-blue-500 hover:underline">Log Out</a>
+            </div>
+          }
+        </div>
+      )
+    }
 
-    const UnauthenticatedState = () => {
-        return (
-          <div>
-            <a onClick={fcl.signUp} className="mr-6 text-sm font-medium text-gray-500 dark:text-white hover:underline">Login</a>
-          </div>
-        )
-      }
+  const UnauthenticatedState = () => {
+      return (
+        <div>
+          <a onClick={fcl.signUp} className="mr-6 text-sm font-medium text-gray-500 dark:text-white hover:underline">Login</a>
+        </div>
+      )
+    }
 
     return ( 
         <div>
@@ -65,6 +66,9 @@ const Navbar = () => {
                 <a to="/" className="flex items-center">
                   <img src={logo} className="xx-App-logo h-8 w-8" alt="logo" />
                   <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">NFT Rentals</span>
+                  <a className="mr-3 text-sm font-medium text-gray-500 mx-5 dark:text-white hover:underline">
+                    <ToggleEnvNet />
+                  </a>
                 </a>
                 <div className="flex items-center">
                   {user.loggedIn

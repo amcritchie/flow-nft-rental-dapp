@@ -5,6 +5,7 @@ import * as fcl from "@onflow/fcl";
 import logo from './assets/logo.svg';
 import './App.css';
 import Navbar from './components/navbar/Navbar';
+import ToggleEnvNet from './components/toggleEnvNet/ToggleEnvNet';
 import Home from './components/home/Home';
 import Legacy from './components/legacy/Legacy';
 import FlowAccountDetails from './components/flowAccountDetails/FlowAccountDetails';

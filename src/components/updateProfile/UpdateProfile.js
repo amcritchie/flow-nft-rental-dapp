@@ -1,5 +1,3 @@
-import "../../flow/config";
-
 import { useState, useEffect } from "react";
 import * as fcl from "@onflow/fcl";
 import LoadingBar from '../loadingBar/LoadingBar';

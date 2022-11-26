@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 
-import flowLogo from '../../flowLogo.png';
-import rookieYear from '../../rookieYear.svg';
-import championshipYear from '../../championshipYear.svg';
-import playerNumber from '../../playerNumber.svg';
-import firstSerial from '../../firstSerial.svg';
-import rookieMint from '../../rookieMint.svg';
-import allDayDebut from '../../allDayDebut.svg';
+import flowLogo from '../../assets/flowLogo.png';
+import rookieYear from '../../assets/rookieYear.svg';
+import championshipYear from '../../assets/championshipYear.svg';
+import playerNumber from '../../assets/playerNumber.svg';
+import firstSerial from '../../assets/firstSerial.svg';
+import rookieMint from '../../assets/rookieMint.svg';
+import allDayDebut from '../../assets/allDayDebut.svg';
 
 const Listings = ({ listings, title, handleRentListing, handleDeleteListing}) => {
 

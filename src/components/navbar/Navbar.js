@@ -88,6 +88,11 @@ const Navbar = () => {
                           </Link>
                         </li>
                         <li>
+                          <Link to={'/query'}>
+                            <a className="text-gray-900 dark:text-white hover:underline" aria-current="page">Query</a>
+                          </Link>
+                        </li>
+                        <li>
                           <Link to={'/mutate'}>
                             <a className="text-gray-900 dark:text-white hover:underline" aria-current="page">Mutate</a>
                           </Link>

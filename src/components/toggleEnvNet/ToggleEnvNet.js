@@ -11,8 +11,8 @@ const ToggleEnvNet = () => {
     
     useEffect(() => {
         console.log("Initializing Flow Environment");
-        // configureMainnet();
-        configureSandbox();
+        configureMainnet();
+        // configureSandbox();
     }, [])
 
 
@@ -21,8 +21,8 @@ const ToggleEnvNet = () => {
             .put("flow.network", "testnet")
             .put("accessNode.api", "https://rest-testnet.onflow.org")
             .put("discovery.wallet", "https://fcl-discovery.onflow.org/testnet/authn")
-            .put("0xProfile", "0xba1132bc08f82fe2") 
-            // .put("0xFlowToken", "0x7e60df042a9c0868")
+            .put("0xBloctoWallet", "0x28546cc533227a74")      // https://flowscan.org/contract/0xfb3acf2dd1569a14
+            .put("0xProfile", "0xba1132bc08f82fe2")           // https://testnet.flowscan.org/contract/A.ba1132bc08f82fe2.Profile
             // .put("app.detail.title", "Test Harness")
             // .put("app.detail.icon", "https://i.imgur.com/r23Zhvu.png")
             // .put("service.OpenID.scopes", "email email_verified name zoneinfo")
@@ -36,9 +36,14 @@ const ToggleEnvNet = () => {
             .put("flow.network", "mainnet")
             .put("accessNode.api", "https://rest-mainnet.onflow.org")
             .put("discovery.wallet", "https://fcl-discovery.onflow.org/authn")
-            .put("0xProfile", "0xba1132bc08f82fe2") 
-            // .put("0xProfile", "0xfb3acf2dd1569a14") // < Blockto Address
-            // .put("0xFlowToken", "0x7e60df042a9c0868")
+            .put("0xDapperWallet", "0x8c48176b31d2421d")      // https://flowscan.org/contract/0x8c48176b31d2421d
+            .put("0xBloctoWallet", "0xfb3acf2dd1569a14")      // https://flowscan.org/contract/0xfb3acf2dd1569a14
+            .put("0xAllDay", "0xe4cf4bdc1751c65d")            // https://flowscan.org/account/A.e4cf4bdc1751c65d.AllDay
+            .put("0xPackNFT", "0xe4cf4bdc1751c65d")           // https://flowscan.org/contract/A.e4cf4bdc1751c65d.PackNFT
+            .put("0xNonFungibleToken", "0x1d7e57aa55817448")  // https://flowscan.org/contract/A.1d7e57aa55817448.NonFungibleToken
+            .put("0xMetadataViews", "0x1d7e57aa55817448")     // https://flowscan.org/contract/A.1d7e57aa55817448.MetadataViews
+            .put("0xPDS", "0x44c6a6fd2281b6cc")               // https://flowscan.org/contract/A.44c6a6fd2281b6cc.PDS
+            // .put("0xProfile", "0xba1132bc08f82fe2") 
             // .put("app.detail.title", "Test Harness")
             // .put("app.detail.icon", "https://i.imgur.com/r23Zhvu.png")
             // .put("service.OpenID.scopes", "email email_verified name zoneinfo")
@@ -50,9 +55,9 @@ const ToggleEnvNet = () => {
     const MainnetState = () => {
         const toggleSandbox = () => {
             // Log Out of FCL
-            fcl.unauthenticate()
+            fcl.unauthenticate();
             // Configure Sandbox Environment
-            configureSandbox()
+            configureSandbox();
             // Login with wallet in new environment
             fcl.signUp();
         }

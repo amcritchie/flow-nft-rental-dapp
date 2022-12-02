@@ -27,6 +27,7 @@ const Query = () => {
     const [error, setError] = useState(null) // NEW
     // const [responseErrorDetails, setResponseErrorDetails] = useState('hello') // NEW
 
+    const [selectedNft, setSelectedNft] = useState(0) // NEW
     const [allDayNftIds, setAllDayNftIds] = useState([]) // NEW
     const [allDayNfts, setAllDayNfts] = useState([]) // NEW
     const [flowAddress, setFlowAddress] = useState('') // NEW
@@ -201,6 +202,81 @@ const Query = () => {
         })
     }
 
+        // Github | nfl-smart-contracts | transfer_moment_nft.cdc
+        // Link https://github.com/dapperlabs/nfl-smart-contracts/blob/main/transactions/user/transfer_moment_nft.cdc
+        const sendSelectedNftToDapper = async () => {
+
+            // Initialize loading and error variables
+            setIsLoading(true);
+            setTransactionStatus('step1')
+            setError(null)
+            setLoading({visible: true})
+
+            // Cadence References
+            // [Best] NFL ALL DAY sending NFT to custodial wallet | https://flowscan.org/transaction/bb1893e5f35dded7be4423fb0df7617e1c2734cbe7a67cba4ddcc317b5670520/script
+            // NFL Smart Contracts Github account | https://github.com/dapperlabs/nfl-smart-contracts/blob/main/transactions/user/transfer_moment_nft.cdc
+            const transactionId = await fcl.mutate({
+            cadence: `
+                import NonFungibleToken from 0x1d7e57aa55817448
+                import AllDay from 0xe4cf4bdc1751c65d
+
+                // this transaction transfers an NFT from one account to another.
+                transaction(recipientAddress: Address, withdrawID: UInt64) {
+                    prepare(signerAcct: AuthAccount) {
+                        // get the recipients public account object
+                        let recipientAcct = getAccount(recipientAddress)
+
+                        // borrow a reference to the signers NFT collection
+                        let signerCollectionRef = signerAcct.borrow<&{NonFungibleToken.Provider}>(from: /storage/AllDayNFTCollection)
+                            ?? panic("Could not borrow a reference to the owners collection")
+
+                        // borrow a public reference to the receivers collection
+                        let depositRef = recipientAcct.getCapability(/public/AllDayNFTCollection)
+                            .borrow<&{NonFungibleToken.CollectionPublic}>()!
+
+                        // withdraw the NFT from the owners collection
+                        let nft <- signerCollectionRef.withdraw(withdrawID: withdrawID)
+
+                        // deposit the NFT in the recipients collection
+                        depositRef.deposit(token: <-nft)
+                    }
+                }
+            `,
+            args: (arg, t) => [
+                arg('0x8c48176b31d2421d', t.Address),   // recipientAddress Address
+                arg(selectedNft, t.UInt64)              // withdrawID UInt64
+                // arg(selectedNft, t.UInt64)              // withdrawID UInt64
+            ],
+                payer: fcl.authz,
+                proposer: fcl.authz,
+                authorizations: [fcl.authz],
+                limit: 9999 // Never seems to effect flow in account.
+            })
+            .then(res => {
+                setAllDayNfts(res)
+                setFlowResponse(res[0].name)
+                setLoading({visible: false})
+            })
+            .catch(err => {
+                console.log('Flow Mutate Error ==========| ');
+                console.log(err);
+                console.log('Flow Mutate Error ==========| ');
+                console.log(err.message);
+                console.log('Flow Mutate Error ==========| ');
+                setShowError(true)
+                setError(err.message)
+                setLoading({visible: false})
+            })
+    
+            fcl.tx(transactionId).subscribe(res => setTransactionStatus(res.status))
+            setLoading({visible: false})
+        }
+
+
+        const handleRentListing = (nftSerial) => {
+
+        }
+
         // [Mutate] Mutate Profile name 
         const executeTransaction = async () => {
 
@@ -233,11 +309,6 @@ const Query = () => {
             setLoading({visible: false})
         }
 
-
-        const handleRentListing = (nftSerial) => {
-
-        }
-
         const [listings, setListings] = useState([
             { name: 'Tom Brady', rentalFeeFlow: 5.0, rentalCollateralFlow: 200.0, serial: 3001, nftSerial: 577428, series: "Series 1", set: 'Base', badges: ['allDayDebut'], imageUrl: "https://assets.nflallday.com/editions/base/98f4d11a-d28c-43f6-b5b1-27c1fe6c86bf/play_98f4d11a-d28c-43f6-b5b1-27c1fe6c86bf_base_capture_Hero_Trans_2880_2880_Transparent.png" },
             { name: 'Micah Parsons', rentalFeeFlow: 15.0, rentalCollateralFlow: 700.0, serial: 140, nftSerial: 686473, series: "Series 1", set: 'In the Trenches', badges: ['rookieYear', 'rookieMint', 'allDayDebut'], imageUrl: "https://assets.nflallday.com/resize/editions/in_the_trenches/ea71ab97-5e26-4369-b609-adfde141d69f/play_ea71ab97-5e26-4369-b609-adfde141d69f_in_the_trenches_capture_Hero_Black_2880_2880_Black.png" },
@@ -257,10 +328,11 @@ const Query = () => {
                     <button onClick={() => setWallet('0x8c48176b31d2421d')} type="button" className="text-white bg-gradient-to-r from-yellow-500 via-yellow-600 to-yellow-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:focus:ring-yellow-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Set Wallet ..2421d</button>
                     <button onClick={() => setWallet('0xfb3acf2dd1569a14')} type="button" className="text-white bg-gradient-to-r from-yellow-500 via-yellow-600 to-yellow-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:focus:ring-yellow-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Set Wallet ..69a14</button>
                     <button onClick={queryAllDayNftIds} type="button" className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Query All Day NFT IDs</button>
-                    <button onClick={() => queryAllDayNFT(3334353)} type="button" className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Query All Day NFTs</button>
+                    <button onClick={sendSelectedNftToDapper} type="button" className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Send Selected NFT to ..2421d</button>
                 </div>
                 <div className="flex items-center">
                     Wallet: {flowAddress}
+                    Selected NFT: {selectedNft}
                 </div>
             </div>
             
@@ -301,7 +373,7 @@ const Query = () => {
             }
 
             {allDayNftIds.map((id) => (
-                <MomentNft address={flowAddress} nftId={id} />
+                <MomentNft address={flowAddress} nftId={id} setSelectedNft={setSelectedNft} />
             ))}
         </div>
      );

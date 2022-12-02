@@ -2,19 +2,39 @@ import { useState, useEffect } from "react";
 import * as fcl from "@onflow/fcl";
 import flowLogo from '../../assets/flowLogo.png';
 
-const MomentNft = ({address, nftId}) => {
+const MomentNft = ({address, nftId, setSelectedNft}) => {
 
+    // const [selectedNft, setSelectedNft] = useState(0) // NEW
     const [allDayNft, setAllDayNft] = useState({badges: []}) // NEW
     const [erroneousNftResponses, setErroneousNftResponses] = useState([]) // NEW
 
     // Run hook on initialization and when the nftId changes.
     useEffect(() => {
+        // console.log("Selected NFTxx: #")
         // Get AllDayNfts metadata upon load.
         getMetadata();
     }, [nftId]);
 
+    // console.log("Selected NFTxx: #")
+
+    const selectMoment = () => {
+
+        // nftId = nftId
+
+        console.log("Selected NFT: #" + nftId)
+
+        setSelectedNft(nftId)
+        // Send NFT to Dapper Wallet ..421d
+        // fcl.mutate
+    }
+    const sendToDapper = () => {
+        // Send NFT to Dapper Wallet ..421d
+        // fcl.mutate
+    }
+
     // Get and process metadata for NFT with id nftId 
     const getMetadata = () => {
+        console.log("Selected NFTyy: #")
         // Cadence script returning metadata for NFT with id nftId 
         // https://github.com/dapperlabs/nfl-smart-contracts/tree/main/scripts/nfts
         fcl.query({
@@ -80,14 +100,16 @@ const MomentNft = ({address, nftId}) => {
                 }
 
                 pub fun main(address: Address, id: UInt64): [AnyStruct] {
-                    let account = getAccount(address)    
-                    // let account = getAccount(0x8c48176b31d2421d)
-                    // let account = getAccount(0xfb3acf2dd1569a14)
 
+                    // get the recipients public account object
+                    let account = getAccount(address)    
+
+                    // Get Collection Reference for All Day NFT based on passed id
                     let collectionRef = account.getCapability(AllDay.CollectionPublicPath)
                             .borrow<&{AllDay.MomentNFTCollectionPublic}>()
                             ?? panic("Could not borrow capability from public collection")
 
+                    // Borrow All Day NFT
                     let nft = collectionRef.borrowMomentNFT(id: id)
                             ?? panic("Couldn't borrow momentNFT")
 
@@ -217,11 +239,11 @@ const MomentNft = ({address, nftId}) => {
                 <div className="flex space-x-2 mb-4 text-sm font-medium">
                     <div className="flex space-x-4">
                         <button 
-                        // onClick={() => handleRentListing(allDayNft.nftSerial)}
-                        type="submit"
+                        onClick={selectMoment}
+                        type="button"
                         className="px-6 h-12 uppercase font-semibold tracking-wider border-2 border-black bg-teal-400 text-black"
                         >
-                            Rent Listing
+                            Select Moment
                         </button>
                         <button 
                         // onClick={() => handleDeleteListing(allDayNft.nftSerial)}

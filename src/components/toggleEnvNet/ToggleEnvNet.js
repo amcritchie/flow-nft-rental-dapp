@@ -21,6 +21,9 @@ const ToggleEnvNet = () => {
             .put("flow.network", "testnet")
             .put("accessNode.api", "https://rest-testnet.onflow.org")
             .put("discovery.wallet", "https://fcl-discovery.onflow.org/testnet/authn")
+            // .put("discovery.authn.endpoint", "https://fcl-discovery.onflow.org/api/testnet/authn") // Endpoint set to Testnet
+            // .put("discovery.authn.include", ["0x9d2e44203cb13051"])  // Ledger wallet address on Testnet set to be included
+            .put("discovery.authn.include", ["0x82ec283f88a62e65"])  // Ledger wallet address on Testnet set to be included
             .put("0xBloctoWallet", "0x28546cc533227a74")      // https://flowscan.org/contract/0xfb3acf2dd1569a14
             .put("0xProfile", "0xba1132bc08f82fe2")           // https://testnet.flowscan.org/contract/A.ba1132bc08f82fe2.Profile
             // .put("app.detail.title", "Test Harness")
@@ -31,11 +34,22 @@ const ToggleEnvNet = () => {
         setEnvironment('sandbox')
     }
 
+//     import { config } from "@onflow/fcl"
+
+// config({
+//   "discovery.authn.endpoint": "https://fcl-discovery.onflow.org/api/testnet/authn", // Endpoint set to Testnet
+//   "discovery.authn.include": ["0x9d2e44203cb13051"] // Ledger wallet address on Testnet set to be included
+// })
+
     const configureMainnet = () => {
         fcl.config()
             .put("flow.network", "mainnet")
             .put("accessNode.api", "https://rest-mainnet.onflow.org")
             .put("discovery.wallet", "https://fcl-discovery.onflow.org/authn")
+            .put("discovery.authn.endpoint", "https://fcl-discovery.onflow.org/api/testnet/authn") // Endpoint set to Testnet
+            // .put("discovery.authn.include", ["0x9d2e44203cb13051"])  // Ledger wallet address on Testnet set to be included
+            // .put("discovery.authn.include", ["0x9d2e44203cb13051","0xead892083b3e2c6c"])  // Ledger wallet address on Testnet set to be included
+            .put("discovery.authn.include", ["0xead892083b3e2c6c"])  // Ledger wallet address on Testnet set to be included
             .put("0xDapperWallet", "0x8c48176b31d2421d")      // https://flowscan.org/contract/0x8c48176b31d2421d
             .put("0xBloctoWallet", "0xfb3acf2dd1569a14")      // https://flowscan.org/contract/0xfb3acf2dd1569a14
             .put("0xAllDay", "0xe4cf4bdc1751c65d")            // https://flowscan.org/account/A.e4cf4bdc1751c65d.AllDay

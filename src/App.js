@@ -1,7 +1,11 @@
-import "./flow/config";
 import { useState, useEffect } from "react";
-import * as fcl from "@onflow/fcl";
 
+// import Providers from './providers/Providers.comp';
+import AuthProvider from './providers/AuthProvider'
+// import AuthProvider from './providers/UserProvider'
+
+import "./flow/config";
+import * as fcl from "@onflow/fcl";
 import logo from './assets/logo.svg';
 import './App.css';
 import Navbar from './components/navbar/Navbar';
@@ -14,6 +18,7 @@ import Interact from './components/interact/Interact';
 import UpdateProfile from './components/updateProfile/UpdateProfile';
 import Mutate from './components/mutate/Mutate';
 import Query from './components/query/Query';
+import MyMoments from './components/myMoments/MyMoments';
 
 // import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -38,6 +43,7 @@ function App() {
   // Navbar example from Flowbite --> https://flowbite.com/docs/components/navbar/
   return (
     <Router>
+      <AuthProvider>
       <div className="App">
 
           {/* Banner */}
@@ -66,8 +72,8 @@ function App() {
               </div>
             </aside>
             {/* Page Content */}
-            <main>
-              Hello
+            {/* <main className="container mx-auto mt-12 bg-green-300"> */}
+            <main className="flex-1">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/interact" element={<Interact />} />
@@ -76,6 +82,7 @@ function App() {
                 <Route path="/query" element={<Query />} />
                 <Route path="/flowAccountDetails" element={<FlowAccountDetails />} />
                 <Route path="/legacy" element={<Legacy />} />
+                <Route path="/myMoments" element={<MyMoments />} />
               </Routes>
             </main>
 
@@ -86,6 +93,7 @@ function App() {
         </footer> */}
 
         </div>
+        </AuthProvider>
     </Router>
   )
 }

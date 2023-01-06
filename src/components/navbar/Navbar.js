@@ -5,11 +5,16 @@ import logo from '../../assets/logo.svg';
 import flowLogo from '../../assets/flowLogo.png';
 import { useState, useEffect } from "react";
 
+// import { useAuth } from '../providers/AuthProvider'
+import { useAuth } from '../../providers/AuthProvider'
+
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 
 import ToggleEnvNet from '../toggleEnvNet/ToggleEnvNet';
 
 const Navbar = ({sidebarOpen, setSidebarOpen}) => {
+    const { userr, logOut } = useAuth()
+
     const [user, setUser] = useState({loggedIn: null})
     const [name, setName] = useState('') // NEW
     const [acct, refetchAcct] = useAccount(user.addr)

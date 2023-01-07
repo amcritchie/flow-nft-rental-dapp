@@ -2,16 +2,15 @@ import * as fcl from "@onflow/fcl";
 import { useState, useEffect } from "react";
 import Moment from '../moment/Moment';
 
-const MyMoments = () => {
+import { useAuth } from '../../providers/AuthProvider'
 
-    const [user, setUser] = useState({loggedIn: null})
+
+const MyMoments = () => {
+    const { user } = useAuth()
+
     const [momentIds, setMomentIds] = useState([])
 
     useEffect(() => {
-
-        // setUser to FCL currentUser which is the user logged in.
-        fcl.currentUser.subscribe(setUser)
-
         // Query IDs of All Day Moments for authed user.
         queryAllDayMomentIds();
     },[])
@@ -59,7 +58,7 @@ const MyMoments = () => {
     <div className="MyMoment">
         <div className="container mx-auto bg-blue-200">
             <h1>
-                My Momments
+                My Moments
                 <button onClick={queryAllDayMomentIds} type="button" className="ml-4 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Query All Day NFT IDs</button>
             </h1>
             

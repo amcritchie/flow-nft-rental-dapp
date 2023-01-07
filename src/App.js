@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
 
+import Providers from './providers/Providers.comp';
+// import { ROUTES } from './config/routes.config';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
 // import Providers from './providers/Providers.comp';
 import AuthProvider from './providers/AuthProvider'
 // import AuthProvider from './providers/UserProvider'
@@ -11,6 +15,8 @@ import './App.css';
 import Navbar from './components/navbar/Navbar';
 import Sidebar from './components/sidebar/Sidebar';
 import ToggleEnvNet from './components/toggleEnvNet/ToggleEnvNet';
+
+// Route Components
 import Home from './components/home/Home';
 import Legacy from './components/legacy/Legacy';
 import FlowAccountDetails from './components/flowAccountDetails/FlowAccountDetails';
@@ -20,13 +26,10 @@ import Mutate from './components/mutate/Mutate';
 import Query from './components/query/Query';
 import MyMoments from './components/myMoments/MyMoments';
 
-// import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
 
   const [sidebarOpen, setSidebarOpen] = useState(true); // If currently on mobile, should change to false.
-
   const [user, setUser] = useState({loggedIn: null})
   const [name, setName] = useState('') // NEW
   const [transaction, setTransaction] = useState('') // NEW
@@ -42,15 +45,8 @@ function App() {
 
   // Navbar example from Flowbite --> https://flowbite.com/docs/components/navbar/
   return (
-    <Router>
-      <AuthProvider>
-      <div className="App">
-
-          {/* Banner */}
-          {/* <header className="bg-green-600 p-4">
-              <h1 className="text-white text-xl text-center">Banner</h1>
-              <h2 className="text-white text-l text-center">Scroll down to see the effect</h2>
-          </header> */}
+      <Providers>
+        <div className="App">
 
           {/* Navbar */}
           <nav className="z-50 sticky top-0 bg-blue-600 drop-shadow shadow-blue-600">
@@ -71,8 +67,8 @@ function App() {
                 <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
               </div>
             </aside>
+
             {/* Page Content */}
-            {/* <main className="container mx-auto mt-12 bg-green-300"> */}
             <main className="flex-1">
               <Routes>
                 <Route path="/" element={<Home />} />
@@ -87,14 +83,8 @@ function App() {
             </main>
 
           </div>
-
-        {/* <footer className="h-96 p-20 bg-red-600">
-            <h1 className="text-white text-4xl text-center p-20">Footer</h1>
-        </footer> */}
-
         </div>
-        </AuthProvider>
-    </Router>
+      </Providers>
   )
 }
 

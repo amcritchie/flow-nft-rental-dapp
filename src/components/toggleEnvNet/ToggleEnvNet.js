@@ -56,6 +56,8 @@ const ToggleEnvNet = () => {
             .put("0xPackNFT", "0xe4cf4bdc1751c65d")           // https://flowscan.org/contract/A.e4cf4bdc1751c65d.PackNFT
             .put("0xNonFungibleToken", "0x1d7e57aa55817448")  // https://flowscan.org/contract/A.1d7e57aa55817448.NonFungibleToken
             .put("0xMetadataViews", "0x1d7e57aa55817448")     // https://flowscan.org/contract/A.1d7e57aa55817448.MetadataViews
+            .put("0xNFTStorefront", "0x4eb8a10cb9f87357")     // https://flowscan.org/contract/A.4eb8a10cb9f87357.NFTStorefront
+            .put("0xDapperUtilityCoin", "0xead892083b3e2c6c")     // https://flowscan.org/contract/A.ead892083b3e2c6c.DapperUtilityCoin
             .put("0xPDS", "0x44c6a6fd2281b6cc")               // https://flowscan.org/contract/A.44c6a6fd2281b6cc.PDS
             // .put("0xProfile", "0xba1132bc08f82fe2") 
             // .put("app.detail.title", "Test Harness")
